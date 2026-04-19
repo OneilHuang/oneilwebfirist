@@ -1,0 +1,366 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+body{font-family:var(--font-sans)}
+
+.wrap{padding:1.5rem 0 2.5rem}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:.5px solid var(--color-border-tertiary)}
+.topbar-left{display:flex;align-items:baseline;gap:12px}
+.sys-name{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.pill-live{background:#E1F5EE;color:#085041}
+.pulse{width:5px;height:5px;border-radius:50%;background:#0F6E56;animation:p 1.8s ease-in-out infinite}
+@keyframes p{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}}
+.topbar-right{text-align:right}
+.clock{font-size:12px;color:var(--color-text-primary);font-weight:500;font-family:var(--font-mono)}
+.dateline{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+
+.nav{display:flex;border-bottom:.5px solid var(--color-border-tertiary);margin-bottom:1.5rem;gap:0}
+.tab{padding:9px 18px;border:none;background:transparent;color:var(--color-text-tertiary);font-size:12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;letter-spacing:.02em}
+.tab:hover{color:var(--color-text-secondary)}
+.tab.on{color:var(--color-text-primary);font-weight:500;border-bottom-color:var(--color-text-primary)}
+
+.panel{display:none}.panel.on{display:block}
+
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--color-border-tertiary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1.5rem}
+.kpi{background:var(--color-background-primary);padding:14px 16px}
+.kpi-l{font-size:10px;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.kpi-v{font-size:22px;font-weight:500;color:var(--color-text-primary);line-height:1;margin-bottom:5px;font-family:var(--font-mono)}
+.kpi-s{font-size:11px;display:flex;align-items:center;gap:4px}
+.chip{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500}
+.chip-up{background:#E1F5EE;color:#085041}
+.chip-dn{background:#FCEBEB;color:#A32D2D}
+.chip-nt{background:#F1EFE8;color:#444441}
+.chip-warn{background:#FAEEDA;color:#633806}
+.up{color:#085041}.dn{color:#A32D2D}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.2rem}
+.card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-title{font-size:10px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.07em;text-transform:uppercase}
+.card-sub{font-size:11px;color:var(--color-text-tertiary)}
+
+.sig-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.sig-row:last-child{border-bottom:none}
+.sig-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:500;margin-top:1px}
+.icon-up{background:#E1F5EE;color:#085041}
+.icon-dn{background:#FCEBEB;color:#A32D2D}
+.icon-nt{background:#F1EFE8;color:#5F5E5A}
+.icon-warn{background:#FAEEDA;color:#633806}
+.sig-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.sig-price{font-size:13px;font-weight:500;font-family:var(--font-mono)}
+.sig-note{font-size:11px;color:var(--color-text-tertiary);margin-top:2px;line-height:1.5}
+
+.macro-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.macro-row:last-child{border-bottom:none}
+.macro-k{font-size:12px;color:var(--color-text-secondary)}
+.macro-v{font-size:12px;font-weight:500;color:var(--color-text-primary);font-family:var(--font-mono);display:flex;align-items:center;gap:6px}
+
+.alert{margin-top:12px;padding:10px 12px;border-left:2px solid #BA7517;border-radius:0;background:#FAEEDA}
+.alert-text{font-size:11px;color:#633806;line-height:1.55}
+
+.ai-btn{width:100%;margin-top:12px;padding:9px 14px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-info);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s;font-family:var(--font-sans)}
+.ai-btn:hover{background:var(--color-background-info)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{font-size:10px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.05em;text-transform:uppercase;padding:4px 0 8px;border-bottom:.5px solid var(--color-border-tertiary);text-align:left}
+.tbl th:not(:first-child){text-align:right}
+.tbl td{padding:9px 0;border-bottom:.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+.tbl td:not(:first-child){text-align:right;font-family:var(--font-mono)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+.tname{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.tcode{font-size:11px;color:var(--color-text-tertiary);margin-top:1px}
+
+.pb-wrap{margin-bottom:10px}
+.pb-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.pb-name{font-size:12px;color:var(--color-text-secondary)}
+.pb-pct{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.pb-track{height:5px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden}
+.pb-fill{height:100%;border-radius:3px}
+
+.news-item{padding:9px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.news-item:last-child{border-bottom:none}
+.news-hed{font-size:13px;font-weight:500;color:var(--color-text-primary);line-height:1.4;margin-bottom:3px}
+.news-meta{font-size:11px;color:var(--color-text-tertiary)}
+
+.ctab-row{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.ctab{padding:5px 12px;border:.5px solid var(--color-border-tertiary);border-radius:20px;background:transparent;color:var(--color-text-secondary);font-size:11px;cursor:pointer;transition:all .15s;font-family:var(--font-sans)}
+.ctab.on{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+.ctab:hover:not(.on){background:var(--color-background-secondary)}
+.chart-panel{display:none}.chart-panel.on{display:block}
+.chart-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.chart-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.chart-val{font-size:13px;font-family:var(--font-mono)}
+.leg{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)}
+.leg-sq{width:10px;height:3px;border-radius:1px}
+.leg-dash{width:10px;height:0;border-top:2px dashed #534AB7}
+</style>
+
+<h2 class="sr-only">股市分析系統 — 台股美股即時盤前盤後日報、投資組合與圖表分析</h2>
+
+<div class="wrap">
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="sys-name">股市分析</span>
+    <span class="pill pill-live"><span class="pulse"></span>模擬盤中</span>
+  </div>
+  <div class="topbar-right">
+    <div class="clock" id="clk">--:--:--</div>
+    <div class="dateline">2026/04/16 · 台北時間</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="tab on" onclick="sw('pre',this)">盤前日報</button>
+  <button class="tab" onclick="sw('post',this)">盤後日報</button>
+  <button class="tab" onclick="sw('port',this)">投資組合</button>
+  <button class="tab" onclick="sw('chart',this);setTimeout(initCharts,60)">圖表分析</button>
+</div>
+
+<!-- 盤前 -->
+<div class="panel on" id="p-pre">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">台股加權</div><div class="kpi-v" id="k-tw">36,947</div><div class="kpi-s"><span class="chip chip-up" id="k-tw-c">▲ +1.16%</span></div></div>
+    <div class="kpi"><div class="kpi-l">S&amp;P 500</div><div class="kpi-v" id="k-sp">7,023</div><div class="kpi-s"><span class="chip chip-up">▲ +0.80%</span></div></div>
+    <div class="kpi"><div class="kpi-l">那斯達克</div><div class="kpi-v" id="k-nq">24,016</div><div class="kpi-s"><span class="chip chip-up">▲ +1.59%</span></div></div>
+    <div class="kpi"><div class="kpi-l">費城半導體</div><div class="kpi-v">9,239</div><div class="kpi-s"><span class="chip chip-up">▲ 歷史新高</span></div></div>
+    <div class="kpi"><div class="kpi-l">VIX</div><div class="kpi-v">18.33</div><div class="kpi-s"><span class="chip chip-nt">低波動</span></div></div>
+    <div class="kpi"><div class="kpi-l">台積電 ADR</div><div class="kpi-v" id="k-adr">379</div><div class="kpi-s"><span class="chip chip-up">▲ +2.16%</span></div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">
+        <span class="card-title">重點個股</span>
+        <span class="card-sub">2026/04/16 盤中</span>
+      </div>
+      <div id="sig-list">
+        <div class="sig-row"><div class="sig-icon icon-warn">法說</div><div><div style="display:flex;justify-content:space-between"><span class="sig-name">台積電 2330</span><span class="sig-price up" id="s-tsmc">2,085</span></div><div class="sig-note">今日法說會 — Q1淨利預估年增 ~50%，創單季歷史新高</div></div></div>
+        <div class="sig-row"><div class="sig-icon icon-up">強</div><div><div style="display:flex;justify-content:space-between"><span class="sig-name">聯發科 2454</span><span class="sig-price up" id="s-mtk">1,895</span></div><div class="sig-note">AI晶片需求強勁，今日漲幅 +5.87%，連3漲</div></div></div>
+        <div class="sig-row"><div class="sig-icon icon-up">▲</div><div><div style="display:flex;justify-content:space-between"><span class="sig-name">廣達 2382</span><span class="sig-price up" id="s-qta">318.5</span></div><div class="sig-note">AI伺服器族群帶動，今日 +3.24%</div></div></div>
+        <div class="sig-row"><div class="sig-icon icon-nt">—</div><div><div style="display:flex;justify-content:space-between"><span class="sig-name">鴻海 2317</span><span class="sig-price dn" id="s-fh">207.0</span></div><div class="sig-note">小幅震盪 -0.24%，觀察 205 支撐</div></div></div>
+        <div class="sig-row"><div class="sig-icon icon-up">▲</div><div><div style="display:flex;justify-content:space-between"><span class="sig-name">台達電 2308</span><span class="sig-price up" id="s-delta">1,835</span></div><div class="sig-note">電源管理連4漲，+2.80%</div></div></div>
+      </div>
+      <button class="ai-btn" onclick="sendPrompt('請根據2026/04/16盤中狀況生成完整盤前日報：台積電法說會預期、聯發科AI晶片強勢、費半歷史新高，給出今日操作重點與布局策略')">生成完整盤前報告 ↗</button>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><span class="card-title">總體環境</span></div>
+      <div class="macro-row"><span class="macro-k">台積電 ADR</span><span class="macro-v">$379 <span class="chip chip-up">強勢</span></span></div>
+      <div class="macro-row"><span class="macro-k">費半指數</span><span class="macro-v">9,239 <span class="chip chip-up">歷史新高</span></span></div>
+      <div class="macro-row"><span class="macro-k">外資買超 (昨)</span><span class="macro-v">+689億 <span class="chip chip-up">連日</span></span></div>
+      <div class="macro-row"><span class="macro-k">黃金現貨</span><span class="macro-v">$3,200+ <span class="chip chip-warn">高位</span></span></div>
+      <div class="macro-row"><span class="macro-k">美元指數</span><span class="macro-v">99.x <span class="chip chip-dn">偏弱</span></span></div>
+      <div class="macro-row"><span class="macro-k">VIX 恐慌</span><span class="macro-v">18.33 <span class="chip chip-nt">低波</span></span></div>
+      <div class="alert"><div class="alert-text">重大事件 — 台積電今日 (4/16) 下午召開 Q1 2026 法說會，市場高度關注，預期淨利年增 50% 創歷史新高</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 盤後 -->
+<div class="panel" id="p-post">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">昨收 (4/15)</div><div class="kpi-v">36,722</div><div class="kpi-s"><span class="chip chip-up">▲ +1.17%</span></div></div>
+    <div class="kpi"><div class="kpi-l">成交量</div><div class="kpi-v">9,717億</div><div class="kpi-s"><span class="chip chip-up">量能放大</span></div></div>
+    <div class="kpi"><div class="kpi-l">外資買超</div><div class="kpi-v up">+689億</div><div class="kpi-s"><span class="chip chip-up">連日淨買</span></div></div>
+    <div class="kpi"><div class="kpi-l">漲停家數</div><div class="kpi-v up">30+</div><div class="kpi-s"><span class="chip chip-up">跌停 0</span></div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem">
+    <div class="card-hd"><span class="card-title">昨日收盤 (4/15)</span><span class="card-sub">台股五大權值</span></div>
+    <table class="tbl">
+      <thead><tr><th>股票</th><th>收盤</th><th>漲跌</th><th>成交量</th></tr></thead>
+      <tbody>
+        <tr><td><div class="tname">台積電</div><div class="tcode">2330</div></td><td>2,080</td><td><span class="chip chip-up">▲ +1.70%</span></td><td style="color:var(--color-text-secondary)">46,824張</td></tr>
+        <tr><td><div class="tname">聯發科</div><div class="tcode">2454</div></td><td>1,790</td><td><span class="chip chip-up">▲ +6.69%</span></td><td style="color:var(--color-text-secondary)">16,485張</td></tr>
+        <tr><td><div class="tname">廣達</div><div class="tcode">2382</div></td><td>308.5</td><td><span class="chip chip-dn">▼ -2.79%</span></td><td style="color:var(--color-text-secondary)">18,090張</td></tr>
+        <tr><td><div class="tname">鴻海</div><div class="tcode">2317</div></td><td>207.5</td><td><span class="chip chip-up">▲ +1.45%</span></td><td style="color:var(--color-text-secondary)">44,325張</td></tr>
+        <tr><td><div class="tname">台達電</div><div class="tcode">2308</div></td><td>1,785</td><td><span class="chip chip-up">▲ +2.86%</span></td><td style="color:var(--color-text-secondary)">7,371張</td></tr>
+        <tr><td><div class="tname">聯電</div><div class="tcode">2303</div></td><td>68.3</td><td><span class="chip chip-up">▲ +9.98%</span></td><td style="color:var(--color-text-secondary)">280,340張</td></tr>
+      </tbody>
+    </table>
+    <button class="ai-btn" onclick="sendPrompt('請生成2026/04/15台股盤後日報：加權36722漲1.17%、外資買超689億、聯發科大漲6.69%、聯電漲近10%、30檔漲停，分析主力動向與明日策略')">生成完整盤後報告 ↗</button>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><span class="card-title">今日盤中要聞</span><span class="card-sub">4/16</span></div>
+    <div class="news-item"><div class="news-hed">台積電法說會今日下午登場，Q1淨利預估年增 50%</div><div class="news-meta">ETtoday財經 · 09:12</div></div>
+    <div class="news-item"><div class="news-hed">聯發科盤中衝上 1,895，AI晶片族群連日走強</div><div class="news-meta">Yahoo股市 · 10:03</div></div>
+    <div class="news-item"><div class="news-hed">台股突破 36,946，費半指數 9,239 創歷史新高</div><div class="news-meta">鉅亨網 · 10:45</div></div>
+    <div class="news-item"><div class="news-hed">美伊和談升溫，S&P 500 收復年內全部跌幅</div><div class="news-meta">新浪財經 · 昨日</div></div>
+  </div>
+</div>
+
+<!-- 投資組合 -->
+<div class="panel" id="p-port">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">總資產</div><div class="kpi-v">$5,842K</div><div class="kpi-s"><span class="chip chip-up">▲ +8.2% 本月</span></div></div>
+    <div class="kpi"><div class="kpi-l">未實現損益</div><div class="kpi-v up">+441K</div><div class="kpi-s"><span class="chip chip-up">報酬率 +8.2%</span></div></div>
+    <div class="kpi"><div class="kpi-l">今日損益</div><div class="kpi-v up">+18,400</div><div class="kpi-s"><span class="chip chip-up">+0.32%</span></div></div>
+    <div class="kpi"><div class="kpi-l">持倉標的</div><div class="kpi-v">5</div><div class="kpi-s"><span class="chip chip-nt">台4 · 美1</span></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">持倉配置</span><span class="card-sub">以現值計</span></div>
+      <div id="port-bars"></div>
+      <button class="ai-btn" onclick="sendPrompt('請分析投資組合：台積電2085（42%）、聯發科1895（23%）、廣達318.5（15%）、台達電1835（12%）、NVIDIA 885美元（8%）。評估半導體集中風險，給出再平衡建議')">AI 分析組合風險 ↗</button>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">持倉明細</span></div>
+      <table class="tbl">
+        <thead><tr><th>標的</th><th>成本</th><th>現價</th><th>損益</th></tr></thead>
+        <tbody>
+          <tr><td><div class="tname">台積電</div><div class="tcode">2330 · 42%</div></td><td>1,750</td><td>2,085</td><td><span class="up" style="font-weight:500">+19.1%</span></td></tr>
+          <tr><td><div class="tname">聯發科</div><div class="tcode">2454 · 23%</div></td><td>1,400</td><td>1,895</td><td><span class="up" style="font-weight:500">+35.4%</span></td></tr>
+          <tr><td><div class="tname">廣達</div><div class="tcode">2382 · 15%</div></td><td>270</td><td>318.5</td><td><span class="up" style="font-weight:500">+18.0%</span></td></tr>
+          <tr><td><div class="tname">台達電</div><div class="tcode">2308 · 12%</div></td><td>1,600</td><td>1,835</td><td><span class="up" style="font-weight:500">+14.7%</span></td></tr>
+          <tr><td><div class="tname">NVIDIA</div><div class="tcode">NVDA · 8%</div></td><td>$680</td><td>$885</td><td><span class="up" style="font-weight:500">+30.1%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 圖表 -->
+<div class="panel" id="p-chart">
+  <div class="ctab-row">
+    <button class="ctab on" id="ct-tw" onclick="sc('tw',this)">台股走勢</button>
+    <button class="ctab" id="ct-us" onclick="sc('us',this)">美股指數</button>
+    <button class="ctab" id="ct-stk" onclick="sc('stk',this)">個股漲幅</button>
+    <button class="ctab" id="ct-sec" onclick="sc('sec',this)">類股表現</button>
+  </div>
+
+  <div class="chart-panel on" id="cv-tw">
+    <div class="card">
+      <div class="chart-hd"><span class="chart-title">台股加權指數 — 近20個交易日</span><span class="chart-val up">36,947 ▲+1.16%</span></div>
+      <div style="position:relative;width:100%;height:240px"><canvas id="c-tw" role="img" aria-label="台股加權指數近20日走勢，從33,200低點回升至36,947">台股近20日走勢數據</canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-panel" id="cv-us">
+    <div class="card">
+      <div class="chart-hd"><span class="chart-title">美股三大指數 — 近20日（起始=100）</span></div>
+      <div class="leg">
+        <div class="leg-item"><div class="leg-sq" style="background:#185FA5"></div>S&amp;P 500</div>
+        <div class="leg-item"><div class="leg-dash"></div>那斯達克</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#1D9E75"></div>道瓊</div>
+      </div>
+      <div style="position:relative;width:100%;height:240px"><canvas id="c-us" role="img" aria-label="美股S&P500、那斯達克、道瓊近20日標準化走勢對比">美股指數走勢</canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-panel" id="cv-stk">
+    <div class="card">
+      <div class="chart-hd"><span class="chart-title">主要個股 — 近期累計漲幅</span></div>
+      <div style="position:relative;width:100%;height:280px"><canvas id="c-stk" role="img" aria-label="台積電19.1%、聯發科35.4%、廣達18%、台達電14.7%、鴻海-0.2%漲跌幅長條圖">個股累計漲幅</canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-panel" id="cv-sec">
+    <div class="card">
+      <div class="chart-hd"><span class="chart-title">台股類股 — 本月漲跌幅</span></div>
+      <div style="position:relative;width:100%;height:340px"><canvas id="c-sec" role="img" aria-label="台股各類股本月漲跌幅，AI伺服器18.6%最強，航運-3.2%最弱">類股本月漲跌幅</canvas></div>
+    </div>
+  </div>
+
+  <button class="ai-btn" style="margin-top:.5rem" onclick="sendPrompt('請根據台股從33,200大幅反彈至36,947、費半創歷史新高、台積電2085即將召開法說會，整合技術面與基本面，給出未來一個月多頭布局策略')">AI 深度技術分析 ↗</button>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function pad(n){return('0'+n).slice(-2)}
+function tick(){
+  const n=new Date();
+  document.getElementById('clk').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());
+}
+tick();setInterval(tick,1000);
+
+function sw(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  el.classList.add('on');
+}
+function sc(id,el){
+  document.querySelectorAll('.chart-panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('cv-'+id).classList.add('on');
+  el.classList.add('on');
+}
+
+const PORT=[
+  {name:'台積電 2330',w:42,col:'#185FA5'},
+  {name:'聯發科 2454',w:23,col:'#534AB7'},
+  {name:'廣達 2382',w:15,col:'#1D9E75'},
+  {name:'台達電 2308',w:12,col:'#D85A30'},
+  {name:'NVIDIA',w:8,col:'#888780'}
+];
+const pb=document.getElementById('port-bars');
+PORT.forEach(p=>{
+  pb.innerHTML+=`<div class="pb-wrap">
+    <div class="pb-hd"><span class="pb-name">${p.name}</span><span class="pb-pct">${p.w}%</span></div>
+    <div class="pb-track"><div class="pb-fill" style="width:${p.w}%;background:${p.col}"></div></div>
+  </div>`;
+});
+
+const SIM={tw:36947,sp:7023,nq:24016,adr:379};
+setInterval(()=>{
+  SIM.tw=Math.round(SIM.tw+(Math.random()-.5)*12);
+  SIM.sp=parseFloat((SIM.sp+(Math.random()-.5)*2).toFixed(2));
+  SIM.nq=Math.round(SIM.nq+(Math.random()-.5)*18);
+  SIM.adr=parseFloat((SIM.adr+(Math.random()-.5)*.8).toFixed(2));
+  document.getElementById('k-tw').textContent=SIM.tw.toLocaleString();
+  document.getElementById('k-sp').textContent=SIM.sp.toLocaleString();
+  document.getElementById('k-nq').textContent=SIM.nq.toLocaleString();
+  document.getElementById('k-adr').textContent=SIM.adr.toFixed(2);
+  const stocks=['s-tsmc','s-mtk','s-qta','s-fh','s-delta'];
+  const bases=[2085,1895,318.5,207,1835];
+  stocks.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    const v=bases[i]+(Math.random()-.5)*bases[i]*.001;
+    el.textContent=v>=1000?Math.round(v).toLocaleString():v.toFixed(1);
+  });
+},7000);
+
+let chartsInited=false;
+function initCharts(){
+  if(chartsInited)return;chartsInited=true;
+  const labels=(()=>{
+    const a=[];const now=new Date('2026-04-16');let cnt=0;
+    for(let i=60;i>=0&&cnt<20;i--){
+      const d=new Date(now);d.setDate(d.getDate()-i);
+      if(d.getDay()!==0&&d.getDay()!==6){a.push((d.getMonth()+1)+'/'+(d.getDate()));cnt++;}
+    }return a;
+  })();
+  const twData=[33200,33050,33380,33610,34761,34900,35100,35300,35050,35200,35450,35600,35800,35900,36100,36200,36296,36722,36947,36947];
+  const spD=[6720,6680,6700,6750,6800,6820,6780,6810,6830,6860,6870,6886,6920,6950,6980,6990,7010,7023,7023,7023];
+  const nqD=[22500,22400,22600,22700,22900,23000,22800,22900,23000,23100,23183,23300,23500,23600,23700,23800,23900,24016,24016,24016];
+  const djD=[47800,47700,47900,48000,48100,48200,48100,48218,48300,48350,48400,48450,48463,48500,48520,48540,48480,48464,48464,48464];
+  const norm=arr=>{const b=arr[0];return arr.map(v=>parseFloat(((v/b)*100).toFixed(2)))};
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:8,font:{size:10},color:'#888780'},grid:{color:'rgba(136,135,128,.08)'},border:{color:'rgba(136,135,128,.2)'}},y:{ticks:{font:{size:10},color:'#888780'},grid:{color:'rgba(136,135,128,.08)'},border:{display:false}}}};
+
+  new Chart(document.getElementById('c-tw'),{type:'line',data:{labels,datasets:[{data:twData,borderColor:'#185FA5',backgroundColor:'rgba(24,95,165,.07)',fill:true,tension:.4,pointRadius:0,borderWidth:2,pointHoverRadius:4,pointHoverBackgroundColor:'#185FA5'}]},options:{...base,plugins:{...base.plugins,tooltip:{callbacks:{label:v=>v.parsed.y.toLocaleString()}}},scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString()}}}}});
+
+  new Chart(document.getElementById('c-us'),{type:'line',data:{labels,datasets:[
+    {label:'S&P',data:norm(spD),borderColor:'#185FA5',tension:.4,pointRadius:0,borderWidth:2,fill:false},
+    {label:'NQ',data:norm(nqD),borderColor:'#534AB7',tension:.4,pointRadius:0,borderWidth:2,fill:false,borderDash:[5,3]},
+    {label:'DJ',data:norm(djD),borderColor:'#1D9E75',tension:.4,pointRadius:0,borderWidth:2,fill:false}
+  ]},options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v.toFixed(1)}}}}});
+
+  const stkL=['台積電\n2330','聯發科\n2454','廣達\n2382','台達電\n2308','鴻海\n2317'];
+  const stkV=[19.1,35.4,18.0,14.7,-0.2];
+  new Chart(document.getElementById('c-stk'),{type:'bar',data:{labels:stkL,datasets:[{data:stkV,backgroundColor:stkV.map(v=>v>=0?'rgba(15,110,86,.75)':'rgba(163,45,45,.75)'),borderRadius:4,borderSkipped:false}]},options:{...base,indexAxis:'y',plugins:{...base.plugins,tooltip:{callbacks:{label:v=>v.parsed.x.toFixed(1)+'%'}}},scales:{...base.scales,x:{...base.scales.x,ticks:{...base.scales.x.ticks,callback:v=>v+'%'}},y:{...base.scales.y,ticks:{font:{size:11},color:'#888780'}}}}});
+
+  const secL=['AI伺服器','半導體','生技醫療','金融','傳統產業','電信','電動車','航運'];
+  const secV=[18.6,14.2,6.3,3.5,1.1,-0.9,-1.8,-3.2];
+  new Chart(document.getElementById('c-sec'),{type:'bar',data:{labels:secL,datasets:[{data:secV,backgroundColor:secV.map(v=>v>=0?'rgba(24,95,165,.72)':'rgba(163,45,45,.72)'),borderRadius:4,borderSkipped:false}]},options:{...base,indexAxis:'y',plugins:{...base.plugins,tooltip:{callbacks:{label:v=>v.parsed.x.toFixed(1)+'%'}}},scales:{...base.scales,x:{...base.scales.x,ticks:{...base.scales.x.ticks,callback:v=>v+'%'}},y:{...base.scales.y,ticks:{font:{size:11},color:'#888780'}}}}});
+}
+</script>
